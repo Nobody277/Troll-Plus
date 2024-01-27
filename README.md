@@ -44,4 +44,4 @@ Contributions to Troll+Plus are always welcome. Whether it's bug reports, featur
 
 ## License
 
-Troll+Plus is open-sourced under the MIT License. Feel free to use, modify, and distribute it as you see fit. Check [LICENSE](link-to-LICENSE-file) for more details.
+Troll+Plus is open-sourced under the MIT License. Feel free to use, modify, and distribute it as you see fit. Check [LICENSE](https://github.com/Nobody272/Troll-Plus/blob/main/LICENSE) for more details.
