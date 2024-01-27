@@ -125,9 +125,9 @@ To start using Troll+Plus, follow these simple steps:
 
 ### Downloading Troll+Plus
 You can download Troll+Plus from one of the following sources:
-- [Fortitude Script Corral.](https://discord.gg/fortitudescriptcorral)
-- [Fortitude Discord server.](https://discord.gg/fortitudemod)
-- [Fortitude Library.](https://fortitudemod.com/dashboard/library)
+- [Fortitude Script Corral](https://discord.gg/fortitudescriptcorral)
+- [Fortitude Discord server](https://discord.gg/fortitudemod)
+- [Fortitude Library](https://fortitudemod.com/dashboard/library)
 
 ### Installing the Script
 1. Once downloaded, locate the script file (usually a `.lua` file).
@@ -138,6 +138,14 @@ You can download Troll+Plus from one of the following sources:
 1. In the Fortitude menu, navigate to `Creator >> Lua Scripts >> Troll+Plus`.
 2. If you don't immediately see the script, go to `Creator >> Lua Scripts >> Load Scripts From Disk`. This should refresh the list and show Troll+Plus.
 3. Once loaded, you can access all features of Troll+Plus under the selected player tab in `Network >> Players >> Troll+Plus`, located at the bottom.
+
+## Support
+
+If you have any questions or need assistance with Troll+Plus, feel free to ask for help in my Discord server. Our community is friendly and always ready to help with any queries you might have.
+
+Join the Discord server here: [Fortitude Script Corral](https://discord.gg/fortitudescriptcorral)
+
+Whether you have questions about installation, features, or troubleshooting, don't hesitate to reach out. We're here to ensure you have the best experience with Troll+Plus!
 
 ## Documentation
 
