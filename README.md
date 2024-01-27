@@ -42,6 +42,74 @@ Troll+Plus is an extensive Lua script for Red Dead Redemption 2, designed for mo
 - Animal Cage Type (Int Spinner)
 - Remove All Cages
 
+### Vehicle Submenu
+- Fix Vehicle
+- Godmode Vehicle
+- Remove Godmode
+- Invisible Vehicle
+- Remove Invisibility
+- Lock Vehicle
+- Unlock Vehicle
+- Stop Vehicle
+- Boost Vehicle
+- Boost Speed (Float Spinner)
+- Launch Vehicle
+- Teleport into vehicle
+- Break Off Random Wheel
+- Explode Vehicle
+- Delete Vehicle
+- Rotate Vehicle 90° Degrees
+- Rotate Vehicle 180° Degrees
+
+### Horse Submenu
+- Buck Off Player
+- Buck Off Player Loop (Toggle)
+- Come To Me
+- Steal Mount
+- Ragdoll Horse
+- Launch Horse
+- Set Horse on Fire
+- Make Horse Bleed Out
+- Kill Horse
+
+### Explosions Submenu
+- Explode Player
+- Explode Player Toggle (Toggle)
+- Blame Explode Lobby
+- Blame Explode Lobby Toggle (Toggle)
+- Explosion Type (Int Spinner)
+- Damage Scale (Int Spinner)
+- Explosion Delay ms (Int Spinner)
+- Audible (Toggle)
+- Visible (Toggle)
+- Camera Shake (Float Spinner)
+
+### PTFX Submenu
+- Toggle Laggy PTFX 1 (Toggle)
+- Toggle Laggy PTFX 2 (Toggle)
+- Toggle Laggy PTFX 3 (Toggle)
+- Toggle Laggy PTFX 4 (Toggle)
+- Toggle Laggy PTFX 5 (Toggle)
+- Toggle Annoying PTFX 1 (Toggle)
+- Toggle Annoying PTFX 2 (Toggle)
+
+### Exploits Submenu
+- Bug Vehicle
+- Destroy Godmode Vehicle
+- Kill Godmode Player
+- Teleport Player
+- Vehicle Teleport
+
+### Session Submenu
+- Photo (Toggle)
+- River (Toggle)
+- UFO (Toggle)
+- Thunder (Toggle)
+- Race Start (Toggle)
+- Fort Notification (Toggle)
+- Rain (Toggle)
+- Police Whistle (Toggle)
+
 ### Advanced
 - Panic Button
 
