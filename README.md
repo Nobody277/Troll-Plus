@@ -147,10 +147,6 @@ Join the Discord server here: [Fortitude Script Corral](https://discord.gg/forti
 
 Whether you have questions about installation, features, or troubleshooting, don't hesitate to reach out. We're here to ensure you have the best experience with Troll+Plus!
 
-## Documentation
-
-For detailed descriptions of each feature, usage instructions, and development notes, check out our [Wiki]().
-
 ## Contributing
 
 Contributions to Troll+Plus are always welcome. Whether it's bug reports, feature suggestions, or code contributions, your input is valuable. See [CONTRIBUTING.md](https://github.com/Nobody272/Troll-Plus/blob/main/CONTRIBUTING.md) for more details.
