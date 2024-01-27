@@ -24,7 +24,23 @@ Troll+Plus is an extensive Lua script for Red Dead Redemption 2, designed for mo
 ### Annoying Submenu
 - Attach Object 1
 - Attach Object 2
-- ... (other features) ...
+- Attach Object 3
+- Attach Object 4
+
+### Cage Submenu
+- Cage with Peds
+- Ped Cage Toggle (Toggle)
+- Ped Cage Type (Int Spinner)
+- Cage with Vehicles
+- Vehicle Cage Toggle (Toggle)
+- Vehicle Cage Type (Int Spinner)
+- Cage with Objects
+- Object Cage Toggle (Toggle)
+- Object Cage Type (Int Spinner)
+- Cage with Animals
+- Animal Cage Toggle (Toggle)
+- Animal Cage Type (Int Spinner)
+- Remove All Cages
 
 ### Advanced
 - Panic Button
