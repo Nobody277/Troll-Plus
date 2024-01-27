@@ -149,7 +149,7 @@ Whether you have questions about installation, features, or troubleshooting, don
 
 ## Documentation
 
-For detailed descriptions of each feature, usage instructions, and development notes, check out our [Wiki](link-to-your-github-wiki-page).
+For detailed descriptions of each feature, usage instructions, and development notes, check out our [Wiki]().
 
 ## Contributing
 
