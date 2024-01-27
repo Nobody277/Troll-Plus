@@ -124,7 +124,7 @@ For detailed descriptions of each feature, usage instructions, and development n
 
 ## Contributing
 
-Contributions to Troll+Plus are always welcome. Whether it's bug reports, feature suggestions, or code contributions, your input is valuable. See [CONTRIBUTING.md](link-to-CONTRIBUTING.md) for more details.
+Contributions to Troll+Plus are always welcome. Whether it's bug reports, feature suggestions, or code contributions, your input is valuable. See [CONTRIBUTING.md](https://github.com/Nobody272/Troll-Plus/blob/main/CONTRIBUTING.md) for more details.
 
 ## License
 
