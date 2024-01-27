@@ -118,6 +118,27 @@ Troll+Plus is an extensive Lua script for Red Dead Redemption 2, designed for mo
 Are you an aspiring Lua developer or just passionate about scripting? Join our Discord community! It's a fantastic place for learning, sharing scripts, and getting insights directly from experienced developers.
 Lua Devs can interact with the community, discuss features, and collaborate on projects. [Join Discord](https://discord.gg/fortitudescriptcorral)
 
+
+## Installation Guide
+
+To start using Troll+Plus, follow these simple steps:
+
+### Downloading Troll+Plus
+You can download Troll+Plus from one of the following sources:
+- [Fortitude Script Corral.](https://discord.gg/fortitudescriptcorral)
+- [Fortitude Discord server.](https://discord.gg/fortitudemod)
+- [Fortitude Library.](https://fortitudemod.com/dashboard/library)
+
+### Installing the Script
+1. Once downloaded, locate the script file (usually a `.lua` file).
+2. Place the script file in the Fortitude Lua folder. This is typically found at `\Documents\Fortitude\Red Dead Redemption 2\LUA`.
+3. Launch the game and open the Fortitude menu.
+
+### Loading the Script
+1. In the Fortitude menu, navigate to `Creator >> Lua Scripts >> Troll+Plus`.
+2. If you don't immediately see the script, go to `Creator >> Lua Scripts >> Load Scripts From Disk`. This should refresh the list and show Troll+Plus.
+3. Once loaded, you can access all features of Troll+Plus under the selected player tab in `Network >> Players >> Troll+Plus`, located at the bottom.
+
 ## Documentation
 
 For detailed descriptions of each feature, usage instructions, and development notes, check out our [Wiki](link-to-your-github-wiki-page).
