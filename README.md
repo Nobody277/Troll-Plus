@@ -116,7 +116,7 @@ Troll+Plus is an extensive Lua script for Red Dead Redemption 2, designed for mo
 ## Discord Community
 
 Are you an aspiring Lua developer or just passionate about scripting? Join our Discord community! It's a fantastic place for learning, sharing scripts, and getting insights directly from experienced developers.
-Lua Devs can interact with the community, discuss features, and collaborate on projects. [Join Discord](https://discord.gg/fortitudescriptcorral)
+Lua Devs can interact with the community, discuss features, and collaborate on projects. [Join Discord](https://discord.gg/scriptcorral)
 
 
 ## Installation Guide
