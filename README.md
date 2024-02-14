@@ -144,7 +144,7 @@ You can download Troll+Plus from one of the following sources:
 
 If you have any questions or need assistance with Troll+Plus, feel free to ask for help in my Discord server. Our community is friendly and always ready to help with any queries you might have.
 
-Join the Discord server here: [Fortitude Script Corral](https://discord.gg/fortitudescriptcorral)
+Join the Discord server here: [Fortitude Script Corral](https://discord.gg/scriptcorral)
 
 Whether you have questions about installation, features, or troubleshooting, don't hesitate to reach out. We're here to ensure you have the best experience with Troll+Plus!
 
