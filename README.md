@@ -126,7 +126,7 @@ To start using Troll+Plus, follow these simple steps:
 ### Downloading Troll+Plus
 You can download Troll+Plus from one of the following sources:
 - [Github Releases](https://github.com/Nobody272/Troll-Plus/releases)
-- [Fortitude Script Corral](https://discord.gg/fortitudescriptcorral)
+- [Fortitude Script Corral](https://discord.gg/scriptcorral)
 - [Fortitude Discord server](https://discord.gg/fortitudemod)
 - [Fortitude Library](https://fortitudemod.com/dashboard/library)
 
