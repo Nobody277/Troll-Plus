@@ -1,6 +1,6 @@
 # Troll+Plus
 
-![Troll+Plus Logo](https://drive.google.com/file/d/1Haajf2fKNYW-8HaSqxQb-H_lsx1F0cB2/view?usp=sharing)
+![Troll+Plus Logo](![image](https://drive.google.com/uc?export=view&id=<1Haajf2fKNYW-8HaSqxQb-H_lsx1F0cB2>))
 
 Troll+Plus is an extensive Lua script for Red Dead Redemption 2, designed for modding enthusiasts and developers. It offers a wide range of trolling, utility, and fun features.
 
