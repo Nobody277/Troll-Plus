@@ -125,8 +125,8 @@ To start using Troll+Plus, follow these simple steps:
 
 ### Downloading Troll+Plus
 You can download Troll+Plus from one of the following sources:
-- [Github Releases](https://github.com/Nobody272/Troll-Plus/releases)
-- [Fortitude Script Corral](https://discord.gg/scriptcorral)
+- [Github Releases](https://github.com/Nobody277/Troll-Plus/releases)
+- [Fortitude Script Corral](https://discord.gg/7AKbaUfsjy)
 - [Fortitude Discord server](https://discord.gg/fortitudemod)
 - [Fortitude Library](https://fortitudemod.com/dashboard/library)
 
@@ -144,14 +144,14 @@ You can download Troll+Plus from one of the following sources:
 
 If you have any questions or need assistance with Troll+Plus, feel free to ask for help in my Discord server. Our community is friendly and always ready to help with any queries you might have.
 
-Join the Discord server here: [Fortitude Script Corral](https://discord.gg/scriptcorral)
+Join the Discord server here: [Fortitude Script Corral](https://discord.gg/7AKbaUfsjy)
 
 Whether you have questions about installation, features, or troubleshooting, don't hesitate to reach out. We're here to ensure you have the best experience with Troll+Plus!
 
 ## Contributing
 
-Contributions to Troll+Plus are always welcome. Whether it's bug reports, feature suggestions, or code contributions, your input is valuable. See [CONTRIBUTING.md](https://github.com/Nobody272/Troll-Plus/blob/main/CONTRIBUTING.md) for more details.
+Contributions to Troll+Plus are always welcome. Whether it's bug reports, feature suggestions, or code contributions, your input is valuable. See [CONTRIBUTING.md](https://github.com/Nobody277/Troll-Plus/blob/main/CONTRIBUTING.md) for more details.
 
 ## License
 
-Troll+Plus is open-sourced under the MIT License. Feel free to use, modify, and distribute it as you see fit. Check [LICENSE](https://github.com/Nobody272/Troll-Plus/blob/main/LICENSE) for more details.
+Troll+Plus is open-sourced under the MIT License. Feel free to use, modify, and distribute it as you see fit. Check [LICENSE](https://github.com/Nobody277/Troll-Plus/blob/main/LICENSE) for more details.
