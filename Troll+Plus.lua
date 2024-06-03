@@ -3,7 +3,7 @@ system.setScriptName('~t4~Troll+Plus')
 -- Initialization
 system.registerConstructor(function()
     logger.logCustom('<#FFFF00>[<b>Troll+Plus: <#FFFFFF>Loaded!</#FFFF00></b><#FFFF00>]')
-    notifications.alertInfo("Have fun trolling :)", "Version 1.0")
+    notifications.alertInfo("Have fun trolling :)", "Version 1.1")
 end)
 
 -- Menu
@@ -14,8 +14,8 @@ local vehicle_id = menu.addSubmenu('player', 'Vehicle', 'Vehicle options.')
 local horse_id = menu.addSubmenu('player', 'Horse', 'Horse options.')
 local explosions_id = menu.addSubmenu('player', 'Explosions', 'Explosion options.')
 local ptfx_id = menu.addSubmenu('player', 'Ptfx', 'PTFX options.')
-local exploits_id = menu.addSubmenu('player', 'Exploits', 'Exploits options.')
---local misc_id = menu.addSubmenu('player', 'Misc', 'Miscellaneous options.')
+local exploits_id = menu.addSubmenu('player', 'Exploits', 'Game Exploits.')
+local misc_id = menu.addSubmenu('self', 'Misc', 'Miscellaneous options.')
 local session_id = menu.addSubmenu('network', 'Session', 'Session options.')
 
 local active_tick_functions = {}
@@ -43,10 +43,10 @@ local function ram_player(player_idx)
     local target_x, target_y, target_z = player.getCoords(player_idx)
     local target_velocity_x, target_velocity_y, target_velocity_z = natives.entity_getEntityVelocity(player.getPed(player_idx), 0)
 
-    local predictionTime = 0.4
-    local predicted_x = target_x + target_velocity_x * predictionTime
-    local predicted_y = target_y + target_velocity_y * predictionTime
-    local predicted_z = target_z + target_velocity_z * predictionTime
+    local prediction_time = 1.0
+    local predicted_x = target_x + target_velocity_x * prediction_time
+    local predicted_y = target_y + target_velocity_y * prediction_time
+    local predicted_z = target_z + target_velocity_z * prediction_time
 
     local distance = math.getRandomFloat(20.0, 24.0)
     local angle = math.getRandomFloat(0, 2 * math.pi())
@@ -173,9 +173,11 @@ local function spawn_attacker(player_idx)
           natives.entity_setEntityInvincible(attacker_ped, true)
       end
       if peds_have_weapons then
-          natives.weapon_giveDelayedWeaponToPed(attacker_ped, 0x772C8DD6, 69000, true, 0x2CD419DC)
-          natives.weapon_setCurrentPedWeapon(attacker_ped, 0x772C8DD6, true, 0, false, false)
-      end
+        natives.weapon_giveDelayedWeaponToPed(attacker_ped, 0x772C8DD6, 69000, true, 0x2CD419DC)
+        natives.weapon_setCurrentPedWeapon(attacker_ped, 0x772C8DD6, true, 0, false, false)
+    else
+        natives.weapon_removeAllPedWeapons(attacker_ped, true, true)
+    end
 
       natives.ped_setPedCombatAbility(attacker_ped, combat_level)
       natives.ped_setPedAccuracy(attacker_ped, accuracy)
@@ -288,6 +290,29 @@ local cage_types = {
   objects = {0x47F582A6, 0xC7AF6993, 0xD3A70902},
   animals = {0xAA89BB8D, 0xBBD91DDA, 0xB91BAB89}
 }
+
+local emotes = {
+    {hash = 0x0},        -- 1 -- None
+    {hash = 0x39C68938}, -- 2 -- Flip Off
+    {hash = 0x0EB7A5F2}, -- 3 -- Cry
+    {hash = 0x2FDFF3B2}, -- 4 -- Point & Laugh
+    {hash = 0xE953BBB7}, -- 5 -- Check Pocket Watch
+    {hash = 0xCC2CC3AC}, -- 6 -- Hypnosis Pocket Watch
+    {hash = 0x1CFB34E2}, -- 7 -- Point
+    {hash = 0x325069E6}, -- 8 -- Prayer
+    {hash = 0xB755B5B1}, -- 9 -- Rock Paper Scissors
+    {hash = 0x81615BA3}, -- 10 -- Smoke Cigar
+    {hash = 0x8B7F8EEB}, -- 11 -- Smoke Cigarette
+    {hash = 0xD0528D38}, -- 12 -- Spooky
+    {hash = 0xBA51B111}, -- 13 -- Take Notes
+    {hash = 0x700DD5CB}, -- 14 -- Greet Tough
+    {hash = 0xF2D01E20}, -- 15 -- Reaction Applause
+    {hash = 0x09D39270}, -- 16 -- Reaction Beg Mercy
+    {hash = 0xC84FB6B6}, -- 17 -- Reaction Clap Along
+    {hash = 0xAD799324}, -- 18 -- Reaction Facepalm
+}
+
+local selected_emote_index = 1
 local spawned_entities = {}
 local cage_tasks = {}
 local is_cage_active = false
@@ -311,11 +336,17 @@ local function apply_settings(entity, target_x, target_y)
 end
 
 local function manage_cage_entities(player_idx, entities)
-  local px, py, _ = player.getCoords(player_idx)
-  for _, entity in ipairs(entities) do
-      apply_settings(entity, px, py)
-      table.insert(spawned_entities, entity)
-  end
+    local px, py, _ = player.getCoords(player_idx)
+    for _, entity in ipairs(entities) do
+        apply_settings(entity, px, py)
+        if natives.entity_isEntityAPed(entity) and natives.ped_isPedHuman(entity) then
+            local emote = emotes[selected_emote_index]
+            if emote.hash then
+                natives.task_taskPlayEmoteWithHash(entity, 0, 1, emote.hash, true, true, false, false, true)
+            end
+        end
+        table.insert(spawned_entities, entity)
+    end
 end
 
 local function spawn_cage_entities(center_x, center_y, center_z, entities, radius, model_hash, entity_type)
@@ -449,6 +480,10 @@ menu.addToggleButton(cage_id, 'Ped Cage Toggle', '', false, setup_cage_toggle(sp
 
 menu.addIntSpinner(cage_id, 'Ped Cage Type', '', 1, #cage_types.peds, 1, selected_ped_cage_type, function(value)
   selected_ped_cage_type = value
+end)
+
+menu.addIntSpinner(cage_id, 'Select Ped Emote', '', 1, #emotes, 1, selected_emote_index, function(value)
+    selected_emote_index = value
 end)
 
 menu.addButton(cage_id, 'Cage with Vehicles', '', function(player_idx) 
@@ -1419,6 +1454,92 @@ local function teleport_vehicle(player_idx)
     end
 end
 
+-- Credit goes to Lucifer/qsilence
+local target_ped = nil
+
+function spawn_entity(pos_x, pos_y, pos_z)
+    local model_hash = natives.misc_getHashKey('breach_cannon')
+    local vehicle_entity = spawner.spawnVehicle(model_hash, pos_x, pos_y, pos_z + 5, false, true)
+    natives.entity_setEntityVisible(vehicle_entity, false)
+    natives.entity_setEntityCollision(vehicle_entity, false, false, false)
+    natives.entity_freezeEntityPosition(vehicle_entity, true)
+    return vehicle_entity
+end
+
+function attach_entity_to_entity(entity, entity2, pos_x, pos_y, pos_z)
+    natives.ped_setPedIntoVehicle(player.getLocalPed(), entity, -1)
+    natives.entity_attachEntityToEntity(entity, entity2, 550, pos_x, pos_y, pos_z, 0, 0, 0, false, false, false, false, 0, false, true, true)
+end
+
+function detach_entity(entity)
+    natives.entity_detachEntity(entity, true, false)
+    logger.logInfo("Detached")
+end
+
+function cleanup_entity(local_ped, entity, pos_x, pos_y, pos_z)
+    natives.entity_freezeEntityPosition(entity, false)
+    natives.entity_setEntityCoords(local_ped, pos_x, pos_y, pos_z, false, false, false, false)
+    natives.entity_freezeEntityPosition(local_ped, false)
+    natives.entity_setEntityVisible(local_ped, true)
+    spawner.deleteVehicle(entity)
+    logger.logInfo("Finished")
+end
+
+-- Credit goes to jamison for finding this.
+local function awning_crash(player_idx)
+    local target_ped = natives.player_getPlayerPed(player_idx)
+    local target_x, target_y, target_z = player.getCoords(player_idx)
+    local focus_object_z = target_z + 10000
+    local focus_object = spawner.spawnObject(0x0FD92BD2, target_x, target_y, focus_object_z)
+    natives.streaming_setFocusEntity(focus_object)
+    
+    local awning_object = spawner.spawnObject(natives.misc_getHashKey("s_chuckwagonawning01b"), target_x, target_y, target_z)
+    logger.logInfo('Awning Crash Sent.')
+    system.yield(500)
+    spawner.deleteObject(awning_object)
+    spawner.deleteObject(focus_object)
+end
+
+-- object_lag goes to me nobody_272
+local spawned_objects = {}
+local max_objects = 80
+local object_hash = 0x21552E68
+local spawn_delay = 1
+
+local function object_lag(player_idx)
+    local target_x, target_y, target_z = player.getCoords(player_idx)
+    local player_x, player_y, player_z = player.getLocalPedCoords()
+
+    local distance = math.getDistance(player_x, player_y, player_z, target_x, target_y, target_z)
+
+    if distance < 1000 then
+        logger.logInfo("Too close to the target. Move at least 1000m away.")
+        notifications.alertDanger("Warning", "Too close to the target. Move at least 1000m away.")
+        return
+    end
+
+    logger.logInfo("Lag Sent")
+    for i = 1, max_objects do
+        local object = natives.object_createObject(object_hash, target_x, target_y, target_z - 14, true, false, true, false, false)
+        table.insert(spawned_objects, object)
+
+        if i % spawn_delay == 0 then
+            system.yield(0)
+        else
+            natives.entity_setEntityVelocity(object, 0, 0, 1)
+        end
+    end
+end
+
+local function delete_objs()
+    if #spawned_objects > 0 then
+        for _, obj in ipairs(spawned_objects) do
+            spawner.deleteObject(obj)
+        end
+        spawned_objects = {}
+    end
+end
+
 menu.addButton(exploits_id, 'Bug Vehicle', '', function(player_idx)
     bug_vehicle(player_idx)
 end)
@@ -1437,6 +1558,41 @@ end)
 
 menu.addButton(exploits_id, 'Vehicle Teleport', '', function(player_idx)
     teleport_vehicle(player_idx)
+end)
+
+menu.addDivider(exploits_id, 'Crashes')
+
+menu.addButton(exploits_id, 'Render Crash ~e~ [Large AOE]', '', function(player_idx)
+    local target_ped = natives.player_getPlayerPed(player_idx)
+    local player_pos_x, player_pos_y, player_pos_z = natives.entity_getEntityCoords(target_ped, true, true)
+    local self_pos_x, self_pos_y, self_pos_z = player.getLocalPedCoords()
+    
+    if target_ped ~= 0 and natives.entity_doesEntityExist(target_ped) and not natives.ped_isPedDeadOrDying(target_ped, true) then
+        local entity = spawn_entity(player_pos_x, player_pos_y, player_pos_z)
+        
+        if entity ~= 0 and natives.entity_doesEntityExist(entity) then
+            attach_entity_to_entity(entity, target_ped, player_pos_x, player_pos_y, player_pos_z)
+            system.yield(1500)
+            detach_entity(entity)
+            system.yield(700)
+            cleanup_entity(player.getLocalPed(), entity, self_pos_x, self_pos_y, self_pos_z)
+        else
+            logger.logInfo("Failed to spawn entity.")
+        end
+    else
+        logger.logInfo("Invalid target or " .. natives.player_getPlayerName(player_idx) .. " is dead.")
+    end
+    target_ped = nil
+end)
+
+menu.addButton(exploits_id, 'Awning Crash ~e~ [Small AOE]', '', awning_crash)
+
+menu.addButton(exploits_id, 'Lag area', '~e~Warning:~q~ Do not get within 1000m of the players location before or after you do this. ~t6~Recommended:~q~ Get ready to click the Stop button. ', function(player_idx)
+    object_lag(player_idx)
+end)
+
+menu.addButton(exploits_id, 'Stop the lag', '', function()
+    delete_objs()
 end)
 
 -- Sound
@@ -1465,6 +1621,15 @@ local function toggle_sound(toggle, sound_id, sound_set)
             sound_tick_function = nil
         end
     end
+end
+
+local function bird_crash()
+    utility.changePlayerModel(0x6A640A7B)
+    system.yield(200)
+    local local_player = player.getLocalPed()
+    natives.task_taskFlyToCoord(local_player, 0, 0, 0, 0, 0, 0)
+    system.yield(1800)
+    utility.changePlayerModel(0xF5C1611E)
 end
 
 menu.addToggleButton(session_id, 'Photo', '', false, function(toggle, player_idx)
@@ -1498,14 +1663,378 @@ end)
 menu.addToggleButton(session_id, 'Police Whistle', '', false, function(toggle, player_idx)
     toggle_sound(toggle, "POLICE_WHISTLE_MULTI", "GNG3_Sounds")
 end)
+menu.addDivider(session_id, 'Crashes')
+menu.addButton(session_id, 'Bird Crash', '', bird_crash)
+
+-- AFK Monitor
+local afk_monitor_enabled = false
+local afk_monitor_timer = system.getTickCount64()
+
+local last_positions = {}
+local afk_start_time = {}
+
+-- Why is math.floor not supported?
+local function format_time(duration_ms)
+    local total_seconds = duration_ms / 1000
+    local hours = total_seconds / 3600
+    local minutes = (total_seconds % 3600) / 60
+    local seconds = total_seconds % 60
+
+    hours = hours - (hours % 1)
+    minutes = minutes - (minutes % 1)
+    seconds = seconds - (seconds % 1)
+
+    local time_parts = {}
+    if hours > 0 then
+        table.insert(time_parts, string.format("%d hour%s", hours, hours ~= 1 and "s" or ""))
+    end
+    if minutes > 0 then
+        table.insert(time_parts, string.format("%d minute%s", minutes, minutes ~= 1 and "s" or ""))
+    end
+    if seconds > 0 or #time_parts == 0 then
+        table.insert(time_parts, string.format("%d second%s", seconds, seconds ~= 1 and "s" or ""))
+    end
+    
+    return table.concat(time_parts, " and ")
+end
+
+local function check_afk_players()
+    if system.getTickCount64() - afk_monitor_timer > 30000 then
+        afk_monitor_timer = system.getTickCount64()
+        player.forEach(function(player_record)
+            local player_ped = player_record.ped
+            local current_x, current_y, current_z = player.getCoords(player_record.id)
+            local last_pos = last_positions[player_record.id]
+
+            if last_pos and last_pos.x == current_x and last_pos.y == current_y and last_pos.z == current_z then
+                if player_ped and natives.task_isPedStill(player_ped) then
+                    local afk_duration = system.getTickCount64() - afk_start_time[player_record.id]
+                    local formatted_time = format_time(afk_duration)
+                    logger.logCustom('<red>Player "' .. player_record.name .. '" has been AFK for ' .. formatted_time)
+                end
+            else
+                afk_start_time[player_record.id] = system.getTickCount64()
+            end
+            last_positions[player_record.id] = {x = current_x, y = current_y, z = current_z}
+        end)
+    end
+end
+
+-- More of a proof of concept thing you can use this to log coords easily if you want to add more positions.
+--[[
+menu.addButton('self', 'Log coords', '', function()
+    local x, y, z = player.getLocalPedCoords()
+    logger.logInfo(string.format("{x = %.2f, y = %.2f, z = %.2f},", x, y, z))
+end)
+]]
+local locations = {
+    {x = -1892.47, y = 1334.11, z = 203.12},
+    {x = -2368.59, y = 473.42, z = 132.01},
+    {x = 3005.02, y = 479.00, z = 44.30},
+    {x = 2153.21, y = -1647.31, z = 40.61},
+    {x = -3548.46, y = -3007.08, z = 11.10},
+    {x = -720.38, y = 925.55, z = 116.08},
+    {x = -1807.66, y = -405.87, z = 152.93},
+    {x = -5198.34, y = -2093.83, z = 12.32},
+    {x = -5393.61, y = -3665.48, z = -24.46},
+    {x = 1962.87, y = -1214.89, z = 42.09},
+    {x = 2337.35, y = -1199.35, z = 44.59},
+    {x = 2557.49, y = -919.47, z = 42.46},
+    {x = 2256.44, y = -793.31, z = 44.26},
+    {x = 2063.96, y = -854.26, z = 43.14},
+    {x = 1709.54, y = -1006.03, z = 42.95},
+    {x = 1372.07, y = -1411.82, z = 79.22},
+    {x = 1332.22, y = -1375.45, z = 79.68},
+    {x = 1183.26, y = -99.68, z = 94.54},
+    {x = 901.09, y = 264.48, z = 116.06},
+    {x = 1927.66, y = 1963.68, z = 263.47},
+    {x = -1963.05, y = 2156.88, z = 327.61},
+    {x = -881.90, y = -1647.19, z = 68.59},
+    {x = -4786.57, y = -2729.23, z = -14.37},
+    {x = -5576.78, y = -2575.94, z = -8.50},
+    {x = -2054.04, y = -1918.17, z = 112.91},
+    {x = 171.14, y = -766.05, z = 41.64},
+    {x = -701.87, y = -462.89, z = 41.70},
+    {x = -2116.14, y = -65.82, z = 258.68},
+    {x = -981.33, y = 1530.21, z = 241.69},
+    {x = -1039.99, y = 2651.62, z = 314.85},
+    {x = 807.38, y = 2000.19, z = 279.98},
+    {x = 2384.59, y = 987.66, z = 73.99},
+    {x = 2381.81, y = -634.09, z = 42.20},
+    {x = 2163.06, y = -857.47, z = 41.69},
+    {x = 1850.92, y = -860.08, z = 42.05},
+    {x = 1904.50, y = -1822.19, z = 41.88},
+    {x = 1117.72, y = -1987.33, z = 55.35},
+    {x = 1357.03, y = -1248.07, z = 79.95},
+    {x = 2539.69, y = -1456.69, z = 46.32},
+    {x = 2410.74, y = -1078.86, z = 47.42},
+    {x = 1625.53, y = -364.60, z = 75.90},
+    {x = 2236.21, y = -141.89, z = 47.62},
+    {x = 2931.37, y = 1389.46, z = 56.25},
+    {x = 554.96, y = 567.49, z = 116.66},
+    {x = -420.79, y = 1736.11, z = 216.56},
+    {x = -1415.58, y = 1131.71, z = 225.54},
+    {x = -1813.71, y = 660.12, z = 131.94},
+    {x = -977.44, y = -1202.03, z = 58.12},
+    {x = -1976.83, y = -1650.20, z = 117.12},
+    {x = 2695.59, y = -1524.86, z = 46.34},
+    {x = 1838.09, y = -1275.66, z = 43.36},
+    {x = 1269.34, y = -402.19, z = 97.61},
+    {x = 577.49, y = 1689.76, z = 187.65},
+    {x = -26.66, y = 1223.92, z = 173.09},
+    {x = -325.28, y = 764.91, z = 117.44},
+    {x = -1319.03, y = 2435.95, z = 309.59},
+    {x = -2216.15, y = 726.49, z = 127.70},
+    {x = -1819.97, y = -372.05, z = 163.30},
+    {x = -755.18, y = -1352.08, z = 43.54},
+    {x = -1639.39, y = -1360.80, z = 84.51},
+    {x = -2322.13, y = -2389.21, z = 63.18},
+    {x = -5200.77, y = -3439.57, z = -11.05},
+    {x = -5462.38, y = -2907.60, z = 0.78},
+}
+
+local collectibles = {
+    0x41214181, 0xA726CB88, 0x7D6ABF6F,
+    0x77F8227E, 0x29F1867A, 0xB4AE10C1,
+    0xD6E0BED5, 0x1D8EA4C0, 0x06A06284,
+    0x9B099D4F, 0x52998C88, 0xEFA4C6A4,
+    0x97A169CE, 0x9E3FF6EB, 0x306D9B48,
+    0x45FABEA6, 0x50B0D41E, 0x1767E18D,
+    0x00EF35B4, 0xDAC6E964, 0x2421FC0D,
+    0xA8CA206B, 0x68711F8A, 0xFB2B44FC,
+    0x1154726A, 0x8B17E5F7, 0x346F38A3,
+    0x49806415, 0x1D820C15, 0x6283961B,
+    0x2DB536EB, 0xA8342C03, 0x91A37EE2,
+    0x7318395C, 0x424C57ED, 0x01815628,
+    0x4CA4288E, 0xB95F820B, 0x6548D9DB,
+    0xB0020880, 0x8616B4AA, 0xCBFCC079,
+    0x75AAB43E, 0x764A3581, 0x67EF18CB,
+    0x6B0C5986, 0x581A334E, 0x0EA72069,
+    0x3BB293E6, 0x6B457347, 0x25E5E889,
+    0xEB0BF2D6, 0xD7A1B25F, 0xA14A8B85,
+    0x51494AF4, 0x1E1F4B85, 0x389CC45E,
+    0x4464644D, 0xA4F19AF6, 0xEA20A407,
+    0xC477D792, 0x71321644, 0xB60D9ED6,
+    0x6759091E, 0x29F2BB3F, 0xC607737A,
+    0x9D77B301, 0x2FB0894D, 0xA347A5C5,
+    0x16E266B5, 0x8D703947, 0xDD0E0706,
+    0x3EEE193C, 0xBED06A3E, 0x40FFAFA6,
+    0xE4AD10C1, 0xDF25A12D, 0x2F177E32,
+    0xA34FF0E7, 0x437B69E7, 0x710329A2,
+    0x16E618E8, 0x1399EFBE, 0x51DD81F8,
+    0x632F9323, 0x06F37801, 0x835EEBC8,
+    0x37F9F778, 0x44E0D361, 0x5D92D04B,
+    0x049281AC, 0x4ED9480E, 0x875BE972,
+    0xEF9D5545, 0x1D7A9171, 0x8598C1C3,
+    0x80DA7E8B, 0x7FC5FEBE, 0x8AF7572A,
+    0x1BDC17B2, 0x72AF40FA, 0x61B1DF3C,
+    0xE71FF735, 0x993D7F00, 0x619B7EEF,
+    0x3AF966D7, 0x453BA146, 0x87E5C1D8,
+    0x4C5B2A0D, 0x886721FC, 0x06C23C90,
+    0x1F4FB3C2, 0xA738020E, 0x90682B5C,
+    0x103CFFA3, 0x77C2D500, 0x2AB52790,
+    0xD20A7E3B, 0x39B2CB66, 0x78C52A23,
+    0x4A7F72F3, 0x22E8F630, 0xEED898DB,
+    0x8904CB57, 0xFEF68704, 0xD7E3CDC3,
+    0xD30ABF4E, 0x46EC3B0D, 0x2103A446,
+    0x47614E1F, 0xC37352A4, 0x8C8978BF,
+    0x6FA4E08C, 0x60FB38F3, 0x927245FE,
+    0x5CA05317, 0x92D498AB, 0xBACD73DF,
+    0xFDC1A891, 0xAE91C0EE, 0xDC487FB4,
+    0xBAA15780, 0x4378D22B, 0x6A0959CB,
+    0xE854BF26, 0x39F16D9F, 0x7EEC54D5,
+    0xE1F95E04, 0x575C0C8C, 0x10C144B7,
+    0xC3CA448A, 0x53E3A47F, 0x6793097B,
+    0x60431E06, 0x2858B99A, 0xB867EC85,
+    0xCFE17743, 0xF4271318, 0xEE6B558B,
+    0x810D8A8C, 0xF82CF600, 0xBE1D9CFE,
+    0x42C83743, 0xD456E551, 0xF58A10A5,
+    0x53658FA8, 0x96A7B31E, 0xCD3115CE,
+    0x2244AD81, 0x8E74EF00, 0x190D449D,
+    0x780541A5, 0x8A7FC823, 0x29E53781,
+    0x93447D9D, 0xC7C69AB6, 0x0E3C4429,
+    0xF1F5568D, 0xCF1C45EB, 0xDCA977B4,
+    0xB4E8D89F, 0xBBEBD5F2, 0xD3A9703A,
+    0x73F2AA05, 0x6659D517, 0x849D3487,
+    0x5CF5424C, 0x34C347E7, 0xA2310759,
+    0x89C859E7, 0x8F595B1C, 0x402D1476,
+    0xB0DFDE10, 0x178D5023, 0x95787329,
+    0xB851ECDC, 0xDF36445D, 0xA5296FFC,
+    0xF234A5A8, 0x373B0C69, 0x04902715,
+    0xB0F346BB, 0xD1751EEE, 0x3F0887FF,
+    0xB2D5FDAB, 0x906DF761, 0x0112CA3F,
+    0x52A6C006, 0x6A084B60, 0xC570E402,
+    0x557612F9, 0xA34AB33C, 0x5E3A6888,
+    0xAF735FDF, 0x9DD889CF, 0xF2610F2E,
+    0x35E768E7, 0x5AB8F9FF, 0x829A0C5F,
+    0xD8F8A0D7, 0xF46DCFA5, 0x2AB28031,
+    0xDF53E37F, 0xDC836190, 0x2C681671,
+    0x3F479FBF, 0x09A4E44E, 0x74CA3FFF,
+    0x66F3BCB4, 0x0B84A2B9, 0x86814AE7,
+    0x03CE0E2C, 0xB3027EC9, 0x7EED6108,
+    0xF4A04EC6, 0xF572EF18, 0xB8C84807,
+    0xED0D7B18, 0x12E3F98F, 0x8C14F046,
+    0x1B197C23, 0x792D94A6, 0xE6C7BF06,
+    0x61C4BE3D, 0x474379BC, 0xC337ADAF,
+    0x2176260A, 0xEB05ED3C, 0x36C4502C,
+    0xF7E840F6, 0x65FE72AF, 0xAD37F4E6,
+    0x6D4324D2, 0x6741AB7B, 0x516697E3,
+    0xE3FF4A58, 0x26DA2E29, 0xB03C20D5,
+    0xA903976F, 0x89F2A24E, 0xEDC521CC,
+    0xBC7A2745, 0xB2BCA30F, 0xA0CB9B5A,
+    0x079C4552, 0x1FA55AF9, 0x5FBDEA64,
+    0x1F9CFF70, 0xA575BC70, 0x4CE83771,
+    0xDD59252D, 0xD94FFDEA, 0xF5449F55,
+    0xEA4CBAA7, 0x1F021CAD, 0x6111682F,
+    0xCB570334, 0x2001C671, 0xFB5E830E,
+    0xFE12CFF0, 0xEC4B205B, 0x1F6FE2DC,
+    0x39A5F09D, 0x50EAE2AF, 0x82EF4622,
+    0x29C1837F, 0x7185642C, 0xF0B4035C,
+    0x162B262C, 0xA7D1435D, 0xE9BFB75A,
+    0xF0E70E0F, 0x8DDB8E7F, 0x9DD0C8CA,
+    0xFDC3FDB1, 0x2C77E86C, 0x80E6F1C8,
+    0x5B47CD50, 0x9BF58DBC, 0x6AAAF739,
+    0xFBB6A636, 0x3581EF56, 0x3F0887FF,
+    0xB851ECDC, 0xDF36445D, 0xA5296FFC,
+    0xF234A5A8, 0x373B0C69, 0x04902715,
+    0xB0F346BB, 0xD1751EEE,
+}
+
+local current_location = 1
+local bot_active = false
+local auto_collect = false
+local marker_coords = nil
+
+local function draw_marker()
+    if marker_coords then
+        natives.graphics_drawMarker(0x94FDAE17, marker_coords.x, marker_coords.y, marker_coords.z - 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.3, 5.0, 173, 216, 230, 100, true, false, 0, true, '', '', false)
+    end
+end
+
+local function area_scan()
+    local found = false
+    for _, collectible_hash in ipairs(collectibles) do
+        if not bot_active then return false end
+        pools.getObjectsInRadius(400.0, function(entity_handle, entity_model)
+            if not bot_active then return end
+            if entity_model == collectible_hash and natives.entity_doesEntityExist(entity_handle) and natives.entity_isEntityVisible(entity_handle) then
+                local x, y, z = natives.entity_getEntityCoords(entity_handle, false, true)
+                utility.teleportToCoords(x, y, z)
+                marker_coords = {x = x, y = y, z = z}
+                logger.logInfo("Collectible found at coordinates: (" .. x .. ", " .. y .. ", " .. z .. ")")
+                notifications.alertInfo("Recovery Bot", "Collectible Found!")
+                system.registerTick(draw_marker)
+                active_tick_functions["draw_marker"] = draw_marker
+
+                if auto_collect then
+                    local local_ped = player.getLocalPed()
+                    natives.task_clearPedTasks(local_ped, true, true)
+                    natives.task_taskPickupCarriableEntity(local_ped, entity_handle)
+                end
+
+                found = true
+            end
+        end)
+        if found then
+            logger.logInfo("Found a collectible nearby.")
+            break
+        end
+    end
+    return found
+end
+
+local function main_bot()
+    if not area_scan() then
+        for i = current_location, #locations do
+            if not bot_active then
+                logger.logInfo("Bot stopped.")
+                break
+            end
+            local location = locations[i]
+            logger.logInfo("Teleporting to Location " .. i .. ": (" .. location.x .. ", " .. location.y .. ", " .. location.z .. ")")
+            utility.teleportToCoords(location.x, location.y, location.z)
+            system.yield(6000)
+
+            if area_scan() then break end
+            current_location = i + 1
+        end
+    end
+
+    if current_location > #locations then
+        logger.logInfo("All locations have been checked. No more locations to visit.")
+    end
+end
+
+menu.addToggleButton(misc_id, 'AFK Monitor', 'Check Console', false, function(toggle)
+    afk_monitor_enabled = toggle
+    if afk_monitor_enabled then
+        afk_monitor_timer = system.getTickCount64() - 30000
+        last_positions = {}
+        player.forEach(function(player_record)
+            afk_start_time[player_record.id] = system.getTickCount64()
+        end)
+        system.registerTick(check_afk_players)
+        active_tick_functions["AFK_Monitor"] = check_afk_players
+        logger.logInfo('AFK monitoring enabled. Waiting 30sec')
+    else
+        system.unregisterTick(check_afk_players)
+        active_tick_functions["AFK_Monitor"] = nil
+        logger.logInfo('AFK monitoring disabled')
+        afk_start_time = {}
+    end
+end)
+
+menu.addToggleButton(misc_id, 'Collectible Scan', '', false, function(toggle)
+    bot_active = toggle
+    if bot_active then
+        if not area_scan() then
+            logger.logInfo("No collectibles found in the area.")
+            notifications.alertInfo("Recovery Bot", "No collectibles found nearby.")
+        end
+    else
+        system.unregisterTick(draw_marker)
+        active_tick_functions["draw_marker"] = nil
+        marker_coords = nil
+        natives.task_clearPedTasks(player.getLocalPed(), true, true)
+    end
+end)
+
+menu.addDivider(misc_id, 'Recovery Bot')
+menu.addToggleButton(misc_id, 'Collectible Bot', '~e~WARNING: ~q~Once toggled it will not turn off until it finds a collectible.~e~DO NOT UNLOAD WHILE RUNNING. ~t6~Please wait until the bot has found a collectible to unload the script.', false, function(toggle)
+    bot_active = toggle
+    if bot_active then
+        logger.logInfo("Bot enabled.")
+        system.registerTick(main_bot)
+        active_tick_functions["main_bot"] = main_bot
+    else
+        system.unregisterTick(main_bot)
+        active_tick_functions["main_bot"] = nil
+        system.unregisterTick(draw_marker)
+        active_tick_functions["draw_marker"] = nil
+        marker_coords = nil
+        natives.task_clearPedTasks(player.getLocalPed(), true, true)
+        logger.logInfo("Bot disabled.")
+    end
+end)
+
+menu.addToggleButton(misc_id, 'Auto Collect', '', false, function(toggle)
+    auto_collect = toggle
+end)
+
+menu.addButton(misc_id, 'Reset Bot', '', function()
+    current_location = 1
+    logger.logInfo("Bot locations reset.")
+end)
 
 -- Panic Button
 menu.addDivider('self', 'Advanced Settings')
 menu.addButton('self', 'Panic Button', 'NOTE: If you are worried you will crash when unloading then press this button.', function()
-    for featureName, tick_function in pairs(active_tick_functions) do
+    for feature_name, tick_function in pairs(active_tick_functions) do
         system.unregisterTick(tick_function)
-        logger.logInfo("Disabled tick function for: " .. featureName)
-        active_tick_functions[featureName] = nil
+        logger.logInfo("Disabled tick function for: " .. feature_name)
+        active_tick_functions[feature_name] = nil
     end
+    bot_active = false
+    marker_coords = nil
     logger.logInfo("All active tick functions have been disabled.")
 end)
